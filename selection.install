@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * Implementation of hook_install().
+ */
+function selection_install() {
+  drupal_install_schema('selection');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function selection_uninstall() {
+  drupal_uninstall_schema('selection');
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function selection_schema() {
+  $schema['selections'] = array(
+    'fields' => array(
+      'sid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
+      'name' => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''),
+      'path' => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''),
+    ),
+    'primary key' => array('sid'),
+  );
+  $schema['selections_filter'] = array(
+    'fields' => array(
+      'sid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'type' => array('type' => 'varchar', 'length' => 20, 'not null' => TRUE, 'default' => ''),
+      'value' => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''),
+    ),
+  );
+  return $schema;
+}

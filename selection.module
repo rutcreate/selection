@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * Implementation of hook_perm().
+ */
+function selection_perm() {
+  return array(
+    'administer selection',
+  );
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function selection_menu() {
+  $items['admin/build/selection'] = array(
+    'title' => 'Selection',
+    'page callback' => 'selection_overview',
+    'access arguments' => array('administer selection'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/selection.admin.inc',
+  );
+  $items['admin/build/selection/list'] = array(
+    'title' => 'List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -1,
+  );
+  $items['admin/build/selection/add'] = array(
+    'title' => 'Add',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('selection_add_form'),
+    'access arguments' => array('administer selection'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'includes/selection.admin.inc',
+  );
+  $items['admin/build/selection/%selection/edit'] = array(
+    'title callback' => 'selection_edit_title',
+    'title arguments' => array(3),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('selection_edit_form', 3),
+    'access arguments' => array('administer selection'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/selection.admin.inc',
+  );
+  $items['admin/build/selection/%selection/delete'] = array(
+    'title callback' => 'selection_delete_title',
+    'title arguments' => array(3),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('selection_delete_form', 3),
+    'access arguments' => array('administer selection'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/selection.admin.inc',
+  );
+  $items['admin/build/selection/clear'] = array(
+    'page callback' => 'selection_clear',
+    'access arguments' => array('administer selection'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Selection load.
+ */
+function selection_load($sid) {
+  return db_fetch_object(db_query("SELECT * FROM {selections} WHERE sid = %d", $sid));
+}
+
+/**
+ * Edit title callback.
+ */
+function selection_edit_title($selection) {
+  return t('Edit selection: @name', array('@name' => $selection->name));
+}
+
+/**
+ * Delete title callback.
+ */
+function selection_delete_title($selection) {
+  return t('Are you sure you want to delete selection @name?', array('@name' => $selection->name));
+}
